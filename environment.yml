@@ -5,10 +5,10 @@ channels:
 
 dependencies:
   - keras=2.0.6
-  - tensorflow
+  - tensorflow-gpu=1.1.0
   - h5py
   - hdf5
-  - pandas
+  - pandas=0.19.2
   - python=3
   - scikit-learn
   - boost
