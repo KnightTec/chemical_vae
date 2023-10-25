@@ -7,8 +7,9 @@ pip install ipykernel
 pip install rdkit-pypi
 pip install pandas
 pip install matplotlib
-pip install tensorflow-gpu==1.1.0
-pip install keras==2.0.7
+pip install tensorflow-gpu==1.15.0
+pip install keras==2.0.6
+pip install h5py==2.10.0
 python setup.py install
 ```
 
