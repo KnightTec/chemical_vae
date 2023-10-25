@@ -1,3 +1,17 @@
+## Updated Setup Instructions
+```
+conda create -n chemvae python=3.6
+conda activate chemvae
+pip install numpy
+pip install ipykernel
+pip install rdkit-pypi
+pip install pandas
+pip install matplotlib
+pip install tensorflow-gpu==1.1.0
+pip install keras==2.0.7
+python setup.py install
+```
+
 ![chemical VAE](https://github.com/aspuru-guzik-group/chemical_vae/blob/master/aux_data/banner.png?raw=true)
 =============
 
