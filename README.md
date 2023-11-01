@@ -11,6 +11,7 @@ pip install tensorflow-gpu==1.15.0
 pip install keras==2.0.6
 pip install h5py==2.10.0
 pip install seaborn==0.11.2
+pip install pubchempy==1.0.4
 python setup.py install
 ```
 
