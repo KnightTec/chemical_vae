@@ -12,6 +12,7 @@ pip install keras==2.0.6
 pip install h5py==2.10.0
 pip install seaborn==0.11.2
 pip install pubchempy==1.0.4
+pip install tqdm==4.64.1
 python setup.py install
 ```
 
