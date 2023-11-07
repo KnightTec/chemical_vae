@@ -8,17 +8,19 @@ RUN apt-get update && apt-get install -y \
     git \
     libx11-6 \
     python3-pip \
-    build-essential && \
+    gnupg \
+    build-essential \
+    apt-utils && \
     rm -rf /var/lib/apt/lists/*
 
-# Set a working directory
-WORKDIR /workspace
+WORKDIR /
 
+# Set a working directory
 RUN wget https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64
-RUN dpkg -i cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64.deb
-RUN apt-key add /var/cuda-repo-<version>/7fa2af80.pub
-RUN sudo apt-get update
-RUN sudo apt-get install cuda
+RUN dpkg -i /cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64
+RUN apt-key add /var/cuda-repo-10-0-local-10.0.130-410.48/7fa2af80.pub
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y cuda
 
 # Install Miniconda and Python 3.6
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
@@ -38,8 +40,6 @@ SHELL ["/bin/bash", "--login", "-c"]
 RUN echo "source activate chemvae" > ~/.bashrc
 ENV PATH /miniconda/envs/chemvae/bin:$PATH
 
-RUN cd chemical_vae
-
 # Install the required packages
 RUN pip install -r requirements.txt
 
@@ -50,7 +50,7 @@ RUN python setup.py install
 EXPOSE 8888
 
 # Define environment variable
-#ENV NAME chemvae
+ENV NAME chemvae
 
 # Run a command under the conda environment
 #CMD ["conda", "run", "-n", "chemvae", "python", "your_script.py"]
