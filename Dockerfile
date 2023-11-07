@@ -1,14 +1,4 @@
-# Use an official NVIDIA runtime as a parent image
-FROM nvidia/cuda:10.0-cudnn7-runtime-ubuntu18.04
-
-# Set a working directory
-WORKDIR /workspace
-
-RUN wget https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64
-RUN dpkg -i cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64.deb
-RUN apt-key add /var/cuda-repo-<version>/7fa2af80.pub
-RUN sudo apt-get update
-RUN sudo apt-get install cuda
+FROM ubuntu:18.04
 
 # Install some basic utilities
 RUN apt-get update && apt-get install -y \
@@ -20,6 +10,15 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     build-essential && \
     rm -rf /var/lib/apt/lists/*
+
+# Set a working directory
+WORKDIR /workspace
+
+RUN wget https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64
+RUN dpkg -i cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64.deb
+RUN apt-key add /var/cuda-repo-<version>/7fa2af80.pub
+RUN sudo apt-get update
+RUN sudo apt-get install cuda
 
 # Install Miniconda and Python 3.6
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
