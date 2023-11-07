@@ -2,11 +2,11 @@
 ```
 conda create -n chemvae python=3.6
 conda activate chemvae
-pip install numpy
-pip install ipykernel
-pip install rdkit-pypi
-pip install pandas
-pip install matplotlib
+pip install numpy==1.19.5
+pip install ipykernel==5.5.6
+pip install rdkit-pypi==2021.9.4
+pip install pandas==1.1.5
+pip install matplotlib==3.3.4
 pip install tensorflow-gpu==1.15.0
 pip install keras==2.0.6
 pip install h5py==2.10.0
