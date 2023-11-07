@@ -2,18 +2,20 @@
 ```
 conda create -n chemvae python=3.6
 conda activate chemvae
-pip install numpy==1.19.5
-pip install ipykernel==5.5.6
-pip install rdkit-pypi==2021.9.4
-pip install pandas==1.1.5
-pip install matplotlib==3.3.4
-pip install tensorflow-gpu==1.15.0
-pip install keras==2.0.6
-pip install h5py==2.10.0
-pip install seaborn==0.11.2
-pip install pubchempy==1.0.4
-pip install tqdm==4.64.1
+pip install -r requirements.txt
 python setup.py install
+```
+
+### Alternative: Docker Setup
+```
+pip install gdown
+
+# now restart the shell to run gdown to download cudnn7 libs
+gdown 146W6GFyEaaoLUC4EguL1VRJZSU2v9gLS
+
+docker build -t chemvae_image .
+
+docker run --gpus all -it chemvae_image 
 ```
 
 ![chemical VAE](https://github.com/aspuru-guzik-group/chemical_vae/blob/master/aux_data/banner.png?raw=true)
