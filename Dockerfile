@@ -16,17 +16,21 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /
 
 # Set a working directory
+#RUN wget -N https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-repo-ubuntu1804_10.0.130-1_amd64.deb
+#RUN dpkg -i cuda-repo-ubuntu1804_10.0.130-1_amd64.deb
 RUN wget https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64
 RUN dpkg -i /cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64
+#RUN wget https://developer.nvidia.com/compute/machine-learning/cudnn/secure/7.6.5.32/Production/10.0_20191031/Ubuntu18_04-x64/libcudnn7_7.6.5.32-1%2Bcuda10.0_amd64.deb
+#RUN dpkg -i /libcudnn7_7.6.5.32-1+cuda10.0_amd64.deb
 RUN apt-key add /var/cuda-repo-10-0-local-10.0.130-410.48/7fa2af80.pub
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y cuda
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y cuda-toolkit-10-0
 
 # Install Miniconda and Python 3.6
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /miniconda && \
     rm ~/miniconda.sh && \
-    /miniconda/bin/conda clean -tipsy && \
+    /miniconda/bin/conda clean -tip && \
     ln -s /miniconda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". /miniconda/etc/profile.d/conda.sh" >> ~/.bashrc && \
     echo "conda activate base" >> ~/.bashrc && \
@@ -36,11 +40,35 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -
 # Make RUN commands use the new environment
 SHELL ["/bin/bash", "--login", "-c"]
 
+RUN echo '#! /bin/sh' > /usr/bin/mesg
+RUN chmod 755 /usr/bin/mesg
+
 # Activate the conda environment
 RUN echo "source activate chemvae" > ~/.bashrc
 ENV PATH /miniconda/envs/chemvae/bin:$PATH
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 
-# Install the required packages
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs
+
+#ENV CUDNN_VERSION=7.6.0.64
+
+#RUN apt-get install -y --allow-downgrades --allow-change-held-packages libcudnn7=7.6.5.32-1+cuda10.0
+
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     libcudnn7=$CUDNN_VERSION-1+cuda10.0 libcudnn7-dev=$CUDNN_VERSION-1+cuda10.0 && \ 
+#     apt-mark hold libcudnn7 && rm -rf /var/lib/apt/lists/*
+
+RUN ln -sf /usr/lib/x86_64-linux-gnu/libcudnn.so.7 /usr/local/cuda/lib64/
+
+WORKDIR /data
+
+COPY . /data
+
+ENV PIP_ROOT_USER_ACTION=ignore
+RUN conda activate chemvae
 RUN pip install -r requirements.txt
 
 # Install any needed packages specified in setup.py
@@ -52,5 +80,9 @@ EXPOSE 8888
 # Define environment variable
 ENV NAME chemvae
 
-# Run a command under the conda environment
-#CMD ["conda", "run", "-n", "chemvae", "python", "your_script.py"]
+ENV PATH /miniconda/bin:$PATH
+
+WORKDIR /workfiles
+
+#ENTRYPOINT ["conda", "run", "-n", "chemvae", "python", "-m" "chemvae.trainvae.py"]
+
