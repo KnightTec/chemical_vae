@@ -98,7 +98,8 @@ class VAEUtils(object):
         return np.linalg.norm(z0 - z_rep, axis=1)
 
     def prep_mol_df(self, smiles, z):
-        df = pd.DataFrame({'smiles': smiles})
+        df = pd.DataFrame({'smiles': smiles, "z": z})
+        print(df.head())
         sort_df = pd.DataFrame(df[['smiles']].groupby(
             by='smiles').size().rename('count').reset_index())
         df = df.merge(sort_df, on='smiles')
@@ -111,7 +112,7 @@ class VAEUtils(object):
         if len(df) > 0:
             df['distance'] = self.smiles_distance_z(df['smiles'], z)
             df['frequency'] = df['count'] / float(sum(df['count']))
-            df = df[['smiles', 'distance', 'count', 'frequency', 'mol']]
+            df = df[['smiles', 'distance', 'count', 'frequency', 'mol', "z"]]
             df.sort_values(by='distance', inplace=True)
             df.reset_index(drop=True, inplace=True)
         return df
